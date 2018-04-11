@@ -5,6 +5,9 @@ set -e
 
 LOGFILE=/var/log/tableau_docker.log
 RETAIN_NUM_LINES=10000
+RANDOM_PASSWORD=`date +%s | sha256sum | base64 | head -c 32 ; echo` 
+
+
 
 function logsetup {  
     TMP=$(tail -n $RETAIN_NUM_LINES $LOGFILE 2>/dev/null) && echo "${TMP}" > $LOGFILE
