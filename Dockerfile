@@ -15,8 +15,8 @@ ENV TABLEAU_VERSION="10-5-0" \
 # make systemd dbus visible 
 VOLUME /sys/fs/cgroup /run /tmp /var/opt/tableau
 
-COPY tableau-tabcmd-${TABLEAU_VERSION}.noarch.rpm /var/tmp/
-COPY tableau-server-${TABLEAU_VERSION}.x86_64.rpm /var/tmp/
+COPY download/tableau-tabcmd-${TABLEAU_VERSION}.noarch.rpm /var/tmp/
+COPY download/tableau-server-${TABLEAU_VERSION}.x86_64.rpm /var/tmp/
 
 # Install core bits and their deps:w
 RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
