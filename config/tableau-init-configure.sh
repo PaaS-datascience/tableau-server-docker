@@ -21,6 +21,12 @@ function log {
 
 logsetup
 
+if [ -f /opt/tableau/docker_build/.init-done ]; then
+
+log tsm already initialized
+
+else
+
 log start initalize tsm
 su tsm -c "sudo sh -x /opt/tableau/tableau_server/packages/scripts.*/initialize-tsm -f --accepteula" 2>&1 1> /var/log/tableau_docker.log
 log initalize done
@@ -52,9 +58,11 @@ su tsm -c "sudo /opt/tableau/tableau_server/packages/customer-bin.${TABLEAU_SERV
 log initalize server done
 
 log initialuser 
-su tsm -c "sudo /opt/tableau/tableau_server/packages/bin.${TABLEAU_SERVER_DATA_DIR_VERSION}/tabcmd initialuser --server localhost:80 --username admin --password admin" 2>&1 1>> /var/log/tableau_docker.log
+su tsm -c "sudo /opt/tableau/tableau_server/packages/bin.${TABLEAU_SERVER_DATA_DIR_VERSION}/tabcmd initialuser --server localhost:80 --username latelier_admin --password ${RANDOM_PASSWORD}" 2>&1 1>> /var/log/tableau_docker.log
+log login latelier_admin password ${RANDOM_PASSWORD}
 log all done
 
 
 touch /opt/tableau/docker_build/.init-done
 
+fi
