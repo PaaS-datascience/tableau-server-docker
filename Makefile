@@ -50,25 +50,23 @@ endif
 network: 
 	@docker network create latelier 2> /dev/null; true
 
-
 build:
-	docker build -t tableau-server .
+	docker-compose -f docker-compose-${TARGET_OS}.yml --verbose build 
+
+init:
+	docker exec -it tableau-server /opt/tableau/docker_build/tableau-init-configure.sh
+
+status:
+	docker exec -it tableau-server /opt/tableau/docker_build/tableau-status.sh
 
 up: network
-	docker-compose up -d
+	docker-compose -f docker-compose-${TARGET_OS}.yml up -d
 
 down:
-	docker-compose down
+	docker exec -it tableau-server /opt/tableau/docker_build/tableau-stop.sh
+	docker-compose -f docker-compose-${TARGET_OS}.yml down
 
 restart: down up
-
-
-clean:
-	docker ps -aq --no-trunc | xargs docker rm
-
-exec:
-	docker exec -ti `docker ps | grep tableau-server |head -1 | awk -e '{print $$1}'` /bin/bash
-
 
 config/registration_file.json: 
 	cp config/registration_file.json.templ config/registration_file.json
@@ -76,6 +74,4 @@ config/registration_file.json:
 
 regconfig: config/registration_file.json
 
-stop:
-	docker stop `docker ps | grep tableau-server |head -1| awk -e '{print $$1}'`
 
