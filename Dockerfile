@@ -2,6 +2,9 @@
 
 # our image is centos default image with systemd
 FROM centos/systemd
+ARG proxy
+ENV http_proxy $proxy
+ENV https_proxy $proxy
 
 MAINTAINER "Fabien ANTOINE" <fabien.antoine@m4x.org>
 
