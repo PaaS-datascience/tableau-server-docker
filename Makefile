@@ -1,13 +1,30 @@
 EDITOR=vim
 
 include /etc/os-release
+TABLEAU_VERSION="10-5-0"
+#TARGET_OS=ubuntu
+TARGET_OS=centos
 
 all: download install-prerequisites regconfig build
 
-
+clean:
+	sudo rm -rf data/ run/ etc/ log/
+	sudo mkdir -p etc/opt/ etc/systemd/system
+	sudo mkdir -p etc/systemd/system/multi-user.target.wants 
+	sudo chmod 777 data/. run/. etc/. log/. etc/opt/. etc/systemd/system/. etc/systemd/system/multi-user.target.wants/.
+	sudo ln -s /lib/systemd/system/multi-user.target etc/systemd/system/default.target
+	
 download:
-	wget https://downloads.tableau.com/esdalt/10.5.0/tableau-server-10-5-0.x86_64.rpm
-	wget https://downloads.tableau.com/esdalt/10.5.0/tableau-tabcmd-10-5-0.noarch.rpm
+ifeq ($(TARGET_OS), ubuntu)
+	@mkdir -p download
+	@wget -q -P download/ -c https://downloads.tableau.com/esdalt/10.5.0/tableau-tabcmd-${TABLEAU_VERSION}_all.deb
+	@wget -q -P download/ -c https://downloads.tableau.com/esdalt/10.5.0/tableau-server-${TABLEAU_VERSION}_amd64.deb
+endif
+ifeq ("$(TARGET_OS)","centos") 
+	@mkdir -p download
+	@wget -q -P download/ -c https://downloads.tableau.com/esdalt/10.5.0/tableau-server-${TABLEAU_VERSION}.x86_64.rpm
+	@wget -q -P download/ -c https://downloads.tableau.com/esdalt/10.5.0/tableau-tabcmd-${TABLEAU_VERSION}.noarch.rpm
+endif
 
 install-prerequisites:
 ifeq ("$(wildcard /usr/bin/docker)","")
