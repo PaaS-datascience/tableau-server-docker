@@ -50,7 +50,7 @@ su tsm -c "sudo /opt/tableau/tableau_server/packages/customer-bin.${TABLEAU_SERV
 log settings import done
 
 log pending-changes apply
-su tsm -c "sudo /opt/tableau/tableau_server/packages/customer-bin.${TABLEAU_SERVER_DATA_DIR_VERSION}/tsm pending-changes apply --restart" 2>&1 1>> /var/log/tableau_docker.log
+su tsm -c "sudo /opt/tableau/tableau_server/packages/customer-bin.${TABLEAU_SERVER_DATA_DIR_VERSION}/tsm pending-changes apply --ignore-prompt" 2>&1 1>> /var/log/tableau_docker.log
 log penging-changes apply done
 
 log initalize server

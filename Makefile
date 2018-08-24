@@ -3,9 +3,8 @@ EDITOR=vim
 include /etc/os-release
 export TABLEAU_VERSION=2018-2-0
 #TARGET_OS=ubuntu
-TARGET_OS=centos
+export TARGET_OS=centos
 
-all: download install-prerequisites regconfig build
 
 clean:
 	sudo rm -rf data/ run/ etc/ log/
@@ -77,4 +76,5 @@ config/registration_file.json:
 
 regconfig: config/registration_file.json
 
+all: download install-prerequisites regconfig build
 
