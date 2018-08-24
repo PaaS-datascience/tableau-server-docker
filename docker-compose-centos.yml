@@ -12,6 +12,7 @@ services:
       dockerfile: Dockerfile
       args:
         proxy: ${http_proxy}
+        TABLEAU_VERSION: ${TABLEAU_VERSION}
     image: tableau-server
     container_name: tableau-server
     volumes:

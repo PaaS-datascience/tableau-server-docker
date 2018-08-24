@@ -1,7 +1,7 @@
 config/registration_file.json
-data/
-download/
-etc/
+data
+download
+etc
 config/.init-done
 log
 run

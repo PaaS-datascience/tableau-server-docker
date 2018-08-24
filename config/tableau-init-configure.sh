@@ -54,9 +54,10 @@ su tsm -c "sudo /opt/tableau/tableau_server/packages/customer-bin.${TABLEAU_SERV
 log penging-changes apply done
 
 log initalize server
-su tsm -c "sudo /opt/tableau/tableau_server/packages/customer-bin.${TABLEAU_SERVER_DATA_DIR_VERSION}/tsm initialize --start-server --request-timeout 1800" 2>&1 1>> /var/log/tableau_docker.log
-log initalize server done
+((su tsm -c "sudo /opt/tableau/tableau_server/packages/customer-bin.${TABLEAU_SERVER_DATA_DIR_VERSION}/tsm initialize" 2>&1 1>> /var/log/tableau_docker.log) && log initalize server done) &
+# su tsm -c "sudo /opt/tableau/tableau_server/packages/customer-bin.${TABLEAU_SERVER_DATA_DIR_VERSION}/tsm initialize --start-server --request-timeout 1800" 2>&1 1>> /var/log/tableau_docker.log
 
+sleep 1200
 log initialuser 
 su tsm -c "sudo /opt/tableau/tableau_server/packages/bin.${TABLEAU_SERVER_DATA_DIR_VERSION}/tabcmd initialuser --server localhost:80 --username latelier_admin --password ${RANDOM_PASSWORD}" 2>&1 1>> /var/log/tableau_docker.log
 log login latelier_admin password ${RANDOM_PASSWORD}

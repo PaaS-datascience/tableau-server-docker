@@ -65,7 +65,7 @@ up: network
 	docker-compose -f docker-compose-${TARGET_OS}.yml up -d
 
 down:
-	docker exec -it tableau-server /opt/tableau/docker_build/tableau-stop.sh
+	#docker exec -it tableau-server /opt/tableau/docker_build/tableau-stop.sh
 	docker-compose -f docker-compose-${TARGET_OS}.yml down
 
 restart: down up
