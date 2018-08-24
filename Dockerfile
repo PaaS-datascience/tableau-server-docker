@@ -2,6 +2,8 @@
 
 # our image is centos default image with systemd
 FROM centos/systemd
+ARG TABLEAU_VERSION
+ENV TABLEAU_VERSION $TABLEAU_VERSION
 ARG proxy
 ENV http_proxy $proxy
 ENV https_proxy $proxy
@@ -9,8 +11,7 @@ ENV https_proxy $proxy
 MAINTAINER "Fabien ANTOINE" <fabien.antoine@m4x.org>
 
 # this is the version what we're building
-ENV TABLEAU_VERSION="10-5-0" \
-    LANG=en_US.UTF-8
+ENV LANG=en_US.UTF-8
 
 # make systemd dbus visible 
 VOLUME /sys/fs/cgroup /run /tmp /var/opt/tableau

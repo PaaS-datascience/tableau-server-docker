@@ -1,7 +1,7 @@
 EDITOR=vim
 
 include /etc/os-release
-TABLEAU_VERSION="10-5-0"
+export TABLEAU_VERSION=2018-2-0
 #TARGET_OS=ubuntu
 TARGET_OS=centos
 
@@ -14,20 +14,23 @@ clean:
 	sudo chmod 777 data/. run/. etc/. log/. etc/opt/. etc/systemd/system/. etc/systemd/system/multi-user.target.wants/.
 	sudo ln -s /lib/systemd/system/multi-user.target etc/systemd/system/default.target
 	
+
 download:
-ifeq ($(TARGET_OS), ubuntu)
+ifeq ($(TARGET_OS),ubuntu)
+	@echo downloading packages for Tableau ${TABLEAU_VERSION} for ${TARGET_OS}
 	@mkdir -p download
-	@wget -q -P download/ -c https://downloads.tableau.com/esdalt/10.5.0/tableau-tabcmd-${TABLEAU_VERSION}_all.deb
-	@wget -q -P download/ -c https://downloads.tableau.com/esdalt/10.5.0/tableau-server-${TABLEAU_VERSION}_amd64.deb
+	@wget -q -P download/ -c https://downloads.tableau.com/esdalt/${TABLEAU_VERSION}/tableau-tabcmd-${TABLEAU_VERSION}_all.deb
+	@wget -q -P download/ -c https://downloads.tableau.com/esdalt/${TABLEAU_VERSION}/tableau-server-${TABLEAU_VERSION}_amd64.deb
 endif
-ifeq ("$(TARGET_OS)","centos") 
+ifeq ($(TARGET_OS),centos) 
+	@echo downloading packages for Tableau ${TABLEAU_VERSION} for ${TARGET_OS}
 	@mkdir -p download
-	@wget -q -P download/ -c https://downloads.tableau.com/esdalt/10.5.0/tableau-server-${TABLEAU_VERSION}.x86_64.rpm
-	@wget -q -P download/ -c https://downloads.tableau.com/esdalt/10.5.0/tableau-tabcmd-${TABLEAU_VERSION}.noarch.rpm
+	@wget -q -P download/ -c https://downloads.tableau.com/esdalt/`echo ${TABLEAU_VERSION} | sed 's/-/\./g'`/tableau-server-${TABLEAU_VERSION}.x86_64.rpm
+	@wget -q -P download/ -c https://downloads.tableau.com/esdalt/`echo ${TABLEAU_VERSION} | sed 's/-/\./g'`/tableau-tabcmd-${TABLEAU_VERSION}.noarch.rpm
 endif
 
 install-prerequisites:
-ifeq ("$(wildcard /usr/bin/docker)","")
+ifeq ("$(wildcard /usr/bin/docker)", "")
         @echo install docker-ce, still to be tested
         sudo apt-get update
         sudo apt-get install \
