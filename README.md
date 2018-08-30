@@ -5,26 +5,51 @@ Dockerfile for Tableau Server on Linux - Single Node.
    
 Be sure that your `EDITOR` environment variable is set then simply call `make`:
 
-    make
+    make build
     
 ## Run image
 
 To boot (run) Tableau Server container simply execute:
 
-    make run
+    make up
 
-It will call a `systemd` `/sbin/init` on the image and configure, register and start tableau server
+**(Broken)** It will call a `systemd` `/sbin/init` on the image and configure, register and start tableau server
 on the first start.
 
-To connect from a different terminal to the server itself use
+## Init tableau
 
-    make exec
-    
-Pro tipp: If you commit the image state after the first execution (tableau configuration and registration) you don't
-have to wait minutes next time.
-    
-## Author
+To initialize and Tableau Server container simply execute the first time:
 
-These ten lines of code done by me, [@tfoldi](https://twitter.com/tfoldi)
+    make init
+
+# Stop & start tableau service
+To stop and Tableau Server, without shutting down the container :
+
+    make stop
+
+To start:
+
+    make start
     
+# Stop container
+To stop the container:
+
+    make down
+    
+# erase config & data
+To erase the config and build a new one:
+
+   make clean
+
+## Volumes
+
+- tableau data : data/
+- logs : log/
+- tableau running env: run/
+- **(broken)**: config after install : etc/
+
+
+## Creds
+
+This is a fork from [@tfoldi](https://twitter.com/tfoldi), focusing on Tableau server 2018.2
 
