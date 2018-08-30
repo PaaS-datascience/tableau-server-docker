@@ -1,18 +1,30 @@
 EDITOR=vim
 
+export PORT=8080
+export COMPOSE_PROJECT_NAME=latelier
+
 include /etc/os-release
 export TABLEAU_VERSION=2018-2-0
 #TARGET_OS=ubuntu
 export TARGET_OS=centos
+export TSM_PASSWORD=*ch4NG_m3!
+export ADMIN_PASSWORD=*ch4NG_m3:t00!
 
+dummy               := $(shell touch artifacts)
+include ./artifacts
 
 clean:
-	sudo rm -rf data/ run/ etc/ log/
+	docker stop tableau-server || echo 
+	docker container rm tableau-server || echo
+	docker image prune -f
+	docker system prune -f
+	sudo rm -rf data/ run/ etc/ log/ 
 	sudo mkdir -p etc/opt/ etc/systemd/system
 	sudo mkdir -p etc/systemd/system/multi-user.target.wants 
 	sudo chmod 777 data/. run/. etc/. log/. etc/opt/. etc/systemd/system/. etc/systemd/system/multi-user.target.wants/.
 	sudo ln -s /lib/systemd/system/multi-user.target etc/systemd/system/default.target
-	
+	sudo cp config/tableau_server_install.service etc/systemd/system/
+	sudo rm config/.init-done || echo
 
 download:
 ifeq ($(TARGET_OS),ubuntu)
@@ -52,8 +64,11 @@ endif
 network: 
 	@docker network create latelier 2> /dev/null; true
 
+rebuild: clean
+	docker-compose -f docker-compose-build-${TARGET_OS}.yml --verbose build --force-rm --no-cache
+
 build:
-	docker-compose -f docker-compose-${TARGET_OS}.yml --verbose build 
+	docker-compose -f docker-compose-build-${TARGET_OS}.yml --verbose build 
 
 init:
 	docker exec -it tableau-server /opt/tableau/docker_build/tableau-init-configure.sh
@@ -64,11 +79,16 @@ status:
 up: network
 	docker-compose -f docker-compose-${TARGET_OS}.yml up -d
 
-down:
-	#docker exec -it tableau-server /opt/tableau/docker_build/tableau-stop.sh
+start: up
+	docker exec -it tableau-server /opt/tableau/docker_build/tableau-start.sh
+
+stop:
+	docker exec -it tableau-server /opt/tableau/docker_build/tableau-stop.sh
+
+down: stop
 	docker-compose -f docker-compose-${TARGET_OS}.yml down
 
-restart: down up
+restart: stop start
 
 config/registration_file.json: 
 	cp config/registration_file.json.templ config/registration_file.json

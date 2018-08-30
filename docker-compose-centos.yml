@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 
 networks:
   default:
@@ -7,24 +7,22 @@ networks:
 
 services:
   tableau-server:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        proxy: ${http_proxy}
-        TABLEAU_VERSION: ${TABLEAU_VERSION}
     image: tableau-server
     container_name: tableau-server
+    hostname: tableau-server
     volumes:
       - ./data:/var/opt/tableau
       - ./etc/opt:/etc/opt
-      - ./etc/systemd/system:/etc/systemd/system
+      # - ./etc/systemd/system:/etc/systemd/system
       - ./config:/opt/tableau/docker_build/
       - ./run:/run
       - ./log:/var/log
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    environment:
+      TSM_PASSWORD: ${TSM_PASSWORD}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
     ports:
       - "8080:80"
-      - "8085:8085"
+      - "8850:8850"
     privileged: true
     

@@ -18,6 +18,6 @@ function log {
     echo "[$(date --rfc-3339=seconds)]: $*"
 }
 
-su tsm -c "sudo /opt/tableau/tableau_server/packages/customer-bin.${TABLEAU_SERVER_DATA_DIR_VERSION}/tsm status" 2>&1 1>> /var/log/tableau_docker.log
+su tsm -c "sudo /opt/tableau/tableau_server/packages/customer-bin.${TABLEAU_SERVER_DATA_DIR_VERSION}/tsm status --username tsm --password ${TSM_PASSWORD}" 2>&1 1>> /var/log/tableau_docker.log
 
 log stopped tsm done

@@ -5,9 +5,7 @@ set -e
 
 LOGFILE=/var/log/tableau_docker.log
 RETAIN_NUM_LINES=10000
-RANDOM_PASSWORD=`date +%s | sha256sum | base64 | head -c 32 ; echo` 
-
-
+#RANDOM_PASSWORD=`date +%s | sha256sum | base64 | head -c 32 ; echo` 
 
 function logsetup {  
     TMP=$(tail -n $RETAIN_NUM_LINES $LOGFILE 2>/dev/null) && echo "${TMP}" > $LOGFILE
@@ -29,12 +27,13 @@ else
 
 log start initalize tsm
 su tsm -c "sudo sh -x /opt/tableau/tableau_server/packages/scripts.*/initialize-tsm -f --accepteula" 2>&1 1> /var/log/tableau_docker.log
-log initalize done
+log initalize done 
 
 source /etc/profile.d/tableau_server.sh
+`cat /proc/1/environ | tr '\0' '\n' | sed 's/^\s*/export /g' | egrep 'ADMIN_PASSWORD|TSM_PASSWORD'`
 
-log login tsm
-su tsm -c "sudo /opt/tableau/tableau_server/packages/customer-bin.${TABLEAU_SERVER_DATA_DIR_VERSION}/tsm login --username tsm --password tsm" 2>&1 1>> /var/log/tableau_docker.log
+log login tsm ... 
+su tsm -c "sudo /opt/tableau/tableau_server/packages/customer-bin.${TABLEAU_SERVER_DATA_DIR_VERSION}/tsm login --username tsm --password ${TSM_PASSWORD}" 2>&1 1>> /var/log/tableau_docker.log
 log login tsm done
 
 log licenses activate
@@ -54,13 +53,12 @@ su tsm -c "sudo /opt/tableau/tableau_server/packages/customer-bin.${TABLEAU_SERV
 log penging-changes apply done
 
 log initalize server
-((su tsm -c "sudo /opt/tableau/tableau_server/packages/customer-bin.${TABLEAU_SERVER_DATA_DIR_VERSION}/tsm initialize" 2>&1 1>> /var/log/tableau_docker.log) && log initalize server done) &
-# su tsm -c "sudo /opt/tableau/tableau_server/packages/customer-bin.${TABLEAU_SERVER_DATA_DIR_VERSION}/tsm initialize --start-server --request-timeout 1800" 2>&1 1>> /var/log/tableau_docker.log
+#((su tsm -c "sudo /opt/tableau/tableau_server/packages/customer-bin.${TABLEAU_SERVER_DATA_DIR_VERSION}/tsm initialize" 2>&1 1>> /var/log/tableau_docker.log) && log initalize server done) &
+(su tsm -c "sudo /opt/tableau/tableau_server/packages/customer-bin.${TABLEAU_SERVER_DATA_DIR_VERSION}/tsm initialize --start-server --request-timeout 2000" 2>&1 1>> /var/log/tableau_docker.log) && log initialize server done || log initialize server shortened
 
-sleep 1200
 log initialuser 
-su tsm -c "sudo /opt/tableau/tableau_server/packages/bin.${TABLEAU_SERVER_DATA_DIR_VERSION}/tabcmd initialuser --server localhost:80 --username latelier_admin --password ${RANDOM_PASSWORD}" 2>&1 1>> /var/log/tableau_docker.log
-log login latelier_admin password ${RANDOM_PASSWORD}
+su tsm -c "sudo /opt/tableau/tableau_server/packages/bin.${TABLEAU_SERVER_DATA_DIR_VERSION}/tabcmd initialuser --server localhost:80 --username latelier_admin --password ${ADMIN_PASSWORD}" 2>&1 1>> /var/log/tableau_docker.log
+log login latelier_admin password ${ADMIN_PASSWORD}
 log all done
 
 

@@ -9,15 +9,20 @@ services:
   tableau-server:
     build:
       context: .
+      dockerfile: Dockerfile
       args:
-        tabver: ${TABLEAU_VERSION}
         proxy: ${http_proxy}
+        TABLEAU_VERSION: ${TABLEAU_VERSION}
+        TSM_PASSWORD: ${TSM_PASSWORD}
+        ADMIN_PASSWORD: ${TSM_PASSWORD}
     image: tableau-server
     container_name: tableau-server
     volumes:
       - ./data:/var/opt/tableau
+      - ./config:/opt/tableau/docker_build/
       - ./run:/run
-      - /sys/fs/cgroup:/sys/fs/cgroup
+      - ./log:/var/log
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
     ports:
       - "8080:80"
       - "8085:8085"
