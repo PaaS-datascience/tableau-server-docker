@@ -18,6 +18,7 @@ clean:
 	docker container rm tableau-server || echo
 	docker image prune -f
 	docker system prune -f
+	docker image rm tableau-server || echo
 	sudo rm -rf data/ run/ etc/ log/ 
 	sudo mkdir -p etc/opt/ etc/systemd/system
 	sudo mkdir -p etc/systemd/system/multi-user.target.wants 
@@ -65,10 +66,10 @@ network:
 	@docker network create latelier 2> /dev/null; true
 
 rebuild: clean
-	docker-compose -f docker-compose-build-${TARGET_OS}.yml --verbose build --force-rm --no-cache
+	docker-compose -f docker-compose-${TARGET_OS}.yml --verbose build --force-rm --no-cache
 
 build:
-	docker-compose -f docker-compose-build-${TARGET_OS}.yml --verbose build 
+	docker-compose -f docker-compose-${TARGET_OS}.yml --verbose build 
 
 init:
 	docker exec -it tableau-server /opt/tableau/docker_build/tableau-init-configure.sh
@@ -83,7 +84,7 @@ start: up
 	docker exec -it tableau-server /opt/tableau/docker_build/tableau-start.sh
 
 stop:
-	docker exec -it tableau-server /opt/tableau/docker_build/tableau-stop.sh
+	docker exec -it tableau-server /opt/tableau/docker_build/tableau-stop.sh || echo stop failed
 
 down: stop
 	docker-compose -f docker-compose-${TARGET_OS}.yml down

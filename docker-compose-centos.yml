@@ -7,7 +7,15 @@ networks:
 
 services:
   tableau-server:
-    image: tableau-server
+    image: tableau-server:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        proxy: ${http_proxy}
+        TABLEAU_VERSION: ${TABLEAU_VERSION}
+        TSM_PASSWORD: ${TSM_PASSWORD}
+        ADMIN_PASSWORD: ${TSM_PASSWORD}
     container_name: tableau-server
     hostname: tableau-server
     volumes:

@@ -42,7 +42,8 @@ RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.
 RUN groupadd tableau && \
     groupadd tsmadmin && \
     usermod tsm -aG tableau,tsmadmin && \
-    useradd --system --comment "Tableau Server" --shell /bin/bash --create-home --home-dir /var/opt/tableau -g tableau tableau
+    useradd --system --comment "Tableau Server" --shell /bin/bash --create-home --home-dir /var/opt/tableau -g tableau tableau && \
+    chown tableau /var/opt/tableau/.
 
 COPY config/* /opt/tableau/docker_build/
 

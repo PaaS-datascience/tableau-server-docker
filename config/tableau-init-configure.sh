@@ -26,6 +26,7 @@ log tsm already initialized
 else
 
 log start initalize tsm
+su tsm -c "sudo chown tableau:tableau /var/opt/tableau/. "
 su tsm -c "sudo sh -x /opt/tableau/tableau_server/packages/scripts.*/initialize-tsm -f --accepteula" 2>&1 1> /var/log/tableau_docker.log
 log initalize done 
 
