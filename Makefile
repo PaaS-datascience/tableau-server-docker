@@ -5,6 +5,7 @@ export COMPOSE_PROJECT_NAME=latelier
 
 include /etc/os-release
 export TABLEAU_VERSION=2018-2-0
+export TABLEAU_VERSION=2018-3-beta2
 #TARGET_OS=ubuntu
 export TARGET_OS=centos
 export TSM_PASSWORD=*ch4NG_m3!
@@ -19,8 +20,8 @@ clean:
 	docker image prune -f
 	docker system prune -f
 	docker image rm tableau-server || echo
-	sudo rm -rf data/ run/ etc/ log/ 
-	sudo mkdir -p etc/opt/ etc/systemd/system
+	sudo rm -rf data/ run/ etc/ log/ root.tableau/ macrovision/ 
+	sudo mkdir -p etc/opt/ etc/systemd/system root.tableau marcovision
 	sudo mkdir -p etc/systemd/system/multi-user.target.wants 
 	sudo chmod 777 data/. run/. etc/. log/. etc/opt/. etc/systemd/system/. etc/systemd/system/multi-user.target.wants/.
 	sudo ln -s /lib/systemd/system/multi-user.target etc/systemd/system/default.target
@@ -65,7 +66,7 @@ endif
 network: 
 	@docker network create latelier 2> /dev/null; true
 
-rebuild: clean
+rebuild: 
 	docker-compose -f docker-compose-${TARGET_OS}.yml --verbose build --force-rm --no-cache
 
 build:
@@ -79,6 +80,9 @@ status:
 
 up: network
 	docker-compose -f docker-compose-${TARGET_OS}.yml up -d
+
+register: 
+	docker exec -it tableau-server /opt/tableau/docker_build/tableau-register.sh
 
 start: up
 	docker exec -it tableau-server /opt/tableau/docker_build/tableau-start.sh

@@ -7,10 +7,10 @@ networks:
 
 services:
   tableau-server:
-    image: tableau-server:latest
+    image: tableau-server:${TABLEAU_VERSION}
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.${TABLEAU_VERSION}
       args:
         proxy: ${http_proxy}
         TABLEAU_VERSION: ${TABLEAU_VERSION}
@@ -21,9 +21,12 @@ services:
     volumes:
       - ./data:/var/opt/tableau
       - ./etc/opt:/etc/opt
+      - ./root.tableau:/root/.tableau/
+      - ./macrovision:/usr/local/share/macrovision/
+      - ./config/odbcinst.ini:/etc/odbcinst.ini
       # - ./etc/systemd/system:/etc/systemd/system
       - ./config:/opt/tableau/docker_build/
-      - ./run:/run
+      #- ./run:/run
       - ./log:/var/log
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     environment:

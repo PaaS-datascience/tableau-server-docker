@@ -1,0 +1,25 @@
+# Customized user service file for Tableau Server
+# The default copy of this file lives in /lib/systemd/system as
+# user@.service.
+# This file will live in /etc/systemd/system and it will be named:
+# user@<uid>.service so that it just applies to the single unprivileged user
+
+[Unit]
+Description=User Manager for UID %i
+After=systemd-user-sessions.service
+
+[Service]
+LimitNOFILE=131072
+LimitNPROC=32768
+User=%i
+PAMName=systemd-user
+Type=notify
+ExecStart=-/lib/systemd/systemd --user
+Slice=user-%i.slice
+KillMode=mixed
+Delegate=yes
+TasksMax=infinity
+Restart=always
+
+[Install]
+WantedBy=default.target
