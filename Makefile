@@ -6,6 +6,7 @@ export COMPOSE_PROJECT_NAME=latelier
 include /etc/os-release
 export TABLEAU_VERSION=2018-2-0
 export TABLEAU_VERSION=2018-3-beta2
+export TABLEAU_VERSION=2018-3-0
 #TARGET_OS=ubuntu
 export TARGET_OS=centos
 export TSM_PASSWORD=*ch4NG_m3!
@@ -21,14 +22,16 @@ clean:
 	docker system prune -f
 	docker image rm tableau-server || echo
 	sudo rm -rf data/ run/ etc/ log/ root.tableau/ macrovision/ 
-	sudo mkdir -p etc/opt/ etc/systemd/system root.tableau marcovision
+	sudo mkdir -p  data/ run/ etc/ log/ root.tableau/ macrovision/
+	sudo mkdir -p etc/opt/ etc/systemd/system root.tableau macrovision
 	sudo mkdir -p etc/systemd/system/multi-user.target.wants 
 	sudo chmod 777 data/. run/. etc/. log/. etc/opt/. etc/systemd/system/. etc/systemd/system/multi-user.target.wants/.
 	sudo ln -s /lib/systemd/system/multi-user.target etc/systemd/system/default.target
 	sudo cp config/tableau_server_install.service etc/systemd/system/
 	sudo rm config/.init-done || echo
+	ln -s data/tableau_server/data/tabsvc/files/backups/ . || echo
 
-download:
+dl:
 ifeq ($(TARGET_OS),ubuntu)
 	@echo downloading packages for Tableau ${TABLEAU_VERSION} for ${TARGET_OS}
 	@mkdir -p download
@@ -94,6 +97,9 @@ down: stop
 	docker-compose -f docker-compose-${TARGET_OS}.yml down
 
 restart: stop start
+
+restore:
+	docker exec -it tableau-server /opt/tableau/docker_build/tableau-restore.sh
 
 config/registration_file.json: 
 	cp config/registration_file.json.templ config/registration_file.json

@@ -6,6 +6,7 @@ set -e
 LOGFILE=/var/log/tableau_docker.log
 RETAIN_NUM_LINES=10000
 #RANDOM_PASSWORD=`date +%s | sha256sum | base64 | head -c 32 ; echo` 
+echo TSM_PASSWORD ${TSM_PASSWORD}
 
 function logsetup {  
     TMP=$(tail -n $RETAIN_NUM_LINES $LOGFILE 2>/dev/null) && echo "${TMP}" > $LOGFILE
@@ -39,11 +40,15 @@ log start tsm done
 
 else
 
-log start initalize tsm
 
 source /etc/profile.d/tableau_server.sh
 `cat /proc/1/environ | tr '\0' '\n' | sed 's/^\s*/export /g' | egrep 'http_proxy|https_proxy|ADMIN_PASSWORD|TSM_PASSWORD'`
 
+log update TSM_PASSWORD
+echo tsm:${TSM_PASSWORD} | chpasswd
+
+log start initalize tsm
+log `date`
 su tsm -c "sudo chown tableau:tableau /var/opt/tableau/. "
 su tsm -c "sudo -E sh -x /opt/tableau/tableau_server/packages/scripts.*/initialize-tsm --http_proxy=$http_proxy --https_proxy=$https_proxy -f --accepteula" 2>&1 1>> /var/log/tableau_docker.log
 log initalize done 
