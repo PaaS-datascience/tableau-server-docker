@@ -6,7 +6,8 @@ export COMPOSE_PROJECT_NAME=latelier
 include /etc/os-release
 export TABLEAU_VERSION=2018-2-0
 export TABLEAU_VERSION=2018-3-beta2
-export TABLEAU_VERSION=2018-3-0
+export TABLEAU_VERSION=2018-3-2
+export TABLEAU_VERSION=2019-1-1
 #TARGET_OS=ubuntu
 export TARGET_OS=centos
 export TSM_PASSWORD=*ch4NG_m3!
@@ -29,7 +30,7 @@ clean:
 	sudo ln -s /lib/systemd/system/multi-user.target etc/systemd/system/default.target
 	sudo cp config/tableau_server_install.service etc/systemd/system/
 	sudo rm config/.init-done || echo
-	ln -s data/tableau_server/data/tabsvc/files/backups/ . || echo
+	# ln -s data/tableau_server/data/tabsvc/files/backups/ . || echo
 
 dl:
 ifeq ($(TARGET_OS),ubuntu)
