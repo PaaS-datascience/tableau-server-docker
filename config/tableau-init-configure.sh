@@ -42,7 +42,7 @@ else
 
 
 source /etc/profile.d/tableau_server.sh
-`cat /proc/1/environ | tr '\0' '\n' | sed 's/^\s*/export /g' | egrep 'http_proxy|https_proxy|ADMIN_PASSWORD|TSM_PASSWORD'`
+`cat /proc/1/environ | tr '\0' '\n' | sed 's/^\s*/export /g' | egrep 'http_proxy|https_proxy|no_proxy|ADMIN_PASSWORD|TSM_PASSWORD'`
 
 log update TSM_PASSWORD
 echo tsm:${TSM_PASSWORD} | chpasswd
@@ -50,7 +50,8 @@ echo tsm:${TSM_PASSWORD} | chpasswd
 log start initalize tsm
 log `date`
 su tsm -c "sudo chown tableau:tableau /var/opt/tableau/. "
-su tsm -c "sudo -E sh -x /opt/tableau/tableau_server/packages/scripts.*/initialize-tsm --http_proxy=$http_proxy --https_proxy=$https_proxy -f --accepteula" 2>&1 1>> /var/log/tableau_docker.log
+su tsm -c "sudo -E sh -x /opt/tableau/tableau_server/packages/scripts.*/initialize-tsm --http_proxy=$http_proxy --https_proxy=$https_proxy --no_proxy=$no_proxy -f --accepteula" 2>&1 1>> /var/log/tableau_docker.log
+
 log initalize done 
 
 log login tsm ... 

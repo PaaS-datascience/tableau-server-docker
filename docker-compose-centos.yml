@@ -30,7 +30,7 @@ services:
       - ./log:/var/log
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     environment:
-      no_proxy: "127.0.0.1,localhost"
+      no_proxy: "127.0.0.1,localhost,tableau,tableau-server"
       TSM_PASSWORD: ${TSM_PASSWORD}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD}
     ports:

@@ -4,9 +4,7 @@ export PORT=8080
 export COMPOSE_PROJECT_NAME=latelier
 
 include /etc/os-release
-export TABLEAU_VERSION=2018-2-0
-export TABLEAU_VERSION=2018-3-beta2
-export TABLEAU_VERSION=2018-3-2
+#export TABLEAU_VERSION=2018-3-4
 export TABLEAU_VERSION=2019-1-1
 #TARGET_OS=ubuntu
 export TARGET_OS=centos

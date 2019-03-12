@@ -12,6 +12,7 @@ services:
       dockerfile: Dockerfile
       args:
         proxy: ${http_proxy}
+        no_proxy: "127.0.0.1,localhost,tableau-server,tableau"
         TABLEAU_VERSION: ${TABLEAU_VERSION}
         TSM_PASSWORD: ${TSM_PASSWORD}
         ADMIN_PASSWORD: ${TSM_PASSWORD}
